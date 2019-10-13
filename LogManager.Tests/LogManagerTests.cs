@@ -18,8 +18,7 @@ namespace LogManager.Tests
 
         private IDocumentPersistenceService _documentPersistenceService;
 
-        private string logFileDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data");
-
+ 
 
         [SetUp]
         public void SetUp()
@@ -29,8 +28,7 @@ namespace LogManager.Tests
             _configuration[Common.Constants.StorageConnectionString].Returns("FileName=Data/Documents.db;Timeout=10; Journal=false;Mode=Exclusive");
             _configuration[Common.Constants.LogFile].Returns("log.txt");
 
-            if (!Directory.Exists(logFileDirectory))
-                Directory.CreateDirectory(logFileDirectory);
+            Utility.CheckDatabaseDirectory();
         }
 
         [Test]
@@ -69,7 +67,7 @@ namespace LogManager.Tests
         [TearDown]
         public void TearDown()
         {
-            Directory.Delete(logFileDirectory, true);
+            Utility.DeleteDatabaseDirectory();
         }
 
         private List<LogRow> GetLogRows()

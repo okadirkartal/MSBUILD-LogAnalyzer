@@ -28,19 +28,24 @@ namespace LogManager
 
             var filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Configuration[Common.Constants.LogFile]);
 
+            Utility.CheckDatabaseDirectory();
+
             var logParseService = _serviceProvider.GetService<ILogParser>();
 
             var jsonData = logParseService.GetJsonDataFromFile(filePath);
 
             logger.LogDebug("Json data received from logs.txt");
+            logger.LogInformation($"json data is : {jsonData}");
 
             var saveableData = logParseService.GetSaveableData(jsonData);
 
             logger.LogDebug("Json data received from logs.txt");
+            logger.LogInformation($"Saveable data is : {saveableData}");
 
             var result = _serviceProvider.GetService<IDocumentPersistenceService>().SaveDocument(saveableData);
 
             logger.LogDebug("Json data saved to liteDB");
+            logger.LogInformation($"saved result is : {result}");
 
             DisposeServices();
 
