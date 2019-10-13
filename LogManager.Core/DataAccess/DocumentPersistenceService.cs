@@ -9,7 +9,7 @@ namespace LogManager.Core.DataAccess
     {
         private readonly IConfiguration _configuration;
 
-        private string _liteDbConnectionString;
+        private readonly string _liteDbConnectionString;
 
         public DocumentPersistenceService(IConfiguration configuration)
         {
@@ -19,20 +19,16 @@ namespace LogManager.Core.DataAccess
 
         public BsonValue SaveDocument(List<LogRow> data)
         {
-            using (var db = new LiteDatabase(_liteDbConnectionString))
-            {
-                var col = db.GetCollection<LogRow>(nameof(LogRow));
+            using var db = new LiteDatabase(_liteDbConnectionString);
+            var col = db.GetCollection<LogRow>(nameof(LogRow));
                  
-                return col.InsertBulk(data.ToArray());
-            }
+            return col.InsertBulk(data.ToArray());
         }
 
         public BsonDocument GetDocument(string bsonId)
         {
-            using (var db = new LiteDatabase(_liteDbConnectionString))
-            {
-                return db.Engine.FindById(nameof(LogRow), bsonId);
-            }
+            using var db = new LiteDatabase(_liteDbConnectionString);
+            return db.Engine.FindById(nameof(LogRow), bsonId);
         }
     }
 }

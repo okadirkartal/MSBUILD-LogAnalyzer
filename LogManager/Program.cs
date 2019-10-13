@@ -1,5 +1,4 @@
 ﻿using LogManager.Core.BLL;
-using LogManager.Core.BLL;
 using LogManager.Core.DataAccess;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

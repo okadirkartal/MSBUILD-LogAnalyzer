@@ -16,15 +16,12 @@ namespace LogManager.Core.BLL
 
             try
             {
-                using (StreamReader sr = File.OpenText(filePath))
+                using StreamReader sr = File.OpenText(filePath);
+                string s = string.Empty;
+                while ((s = sr.ReadLine()) != null)
                 {
-                    string s = String.Empty;
-                    while ((s = sr.ReadLine()) != null)
-                    {
-                        list.Add(JsonConvert.DeserializeObject<LogItem>(s));
-                    }
+                    list.Add(JsonConvert.DeserializeObject<LogItem>(s));
                 }
-
             }
             catch (Exception ex)
             {
@@ -45,19 +42,22 @@ namespace LogManager.Core.BLL
                 {
                     if (item.state.Equals("STARTED"))
                     {
-                        var finishedItem = items.Where(x => x.id == item.id && x.state == "FINISHED").FirstOrDefault();
+                        var finishedItem = items.FirstOrDefault(x => x.id == item.id && x.state == "FINISHED");
 
-                        var differenceMiliSeconds = finishedItem.timestamp - item.timestamp;
-
-                        resultList.Add(new LogRow
+                        if (finishedItem != null)
                         {
-                            id=Guid.NewGuid().ToString().Replace("-",""),
-                            EventId = item.id,
-                            EventDuration = differenceMiliSeconds,
-                            Host = item.host,
-                            Type = item.type,
-                            Alert = differenceMiliSeconds > 4
-                        });
+                            var differenceMiliSeconds = finishedItem.timestamp - item.timestamp;
+
+                            resultList.Add(new LogRow
+                            {
+                                id=Guid.NewGuid().ToString().Replace("-",""),
+                                EventId = item.id,
+                                EventDuration = differenceMiliSeconds,
+                                Host = item.host,
+                                Type = item.type,
+                                Alert = differenceMiliSeconds > 4
+                            });
+                        }
                     }
                 }
             }
